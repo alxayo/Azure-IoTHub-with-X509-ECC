@@ -83,3 +83,39 @@ cd ./cert
 cat new-device.cert.pem azure-iot-test-only.intermediate.cert.pem azure-iot-test-only.root.ca.cert.pem > new-device-full-chain.cert.pem
 #device's private key is in: ./private/new-device.cert.pem 
 ```
+## Nodejs Simulation device with X509 cert.
+
+### Create a device in Azure IoT Hub
+```bash
+#Get X509 device certificate tumbprint from Azure Iot Hub
+az iot hub certificate show -n ECC_Test_Certificate --hub-name iotCertHub
+
+#Create a device authenticating with an existing X.509 certificate.
+az iot device create --hub-name iotCertHub --device-id myEccIoTDevice --x509 --primary-thumbprint D2E8BDD7C408861FEB6AC3E7B5CEE924D3BD5092
+
+#Get device connection string
+ az iot device show-connection-string --hub-name iotCertHub --device-id myEccIoTDevice
+``` 
+
+### Run the Node.js Simulated device
+
+The nodejs simulated device using X509 is created by using a Microsoft samle from public GitHub repo here:
+* [simple_sample_device_x509.js](https://github.com/Azure/azure-iot-sdk-node/tree/master/device/samples)
+
+Open iot-device.js and update the following lines with the relevant data:
+```javascript
+var connectionString = 'HostName=iotCertHub.azure-devices.net;DeviceId=myEccIoTDevice;x509=true';
+var certFile = '../certs/new-device-full-chain.cert.pem';
+var keyFile = '../private/new-device.cert.pem';
+var passphrase = '123';
+```
+
+```bash
+#Go to simulated device folder
+cd simulated-device
+#Instal nodejs dependencies
+npm install
+
+#run the sample
+node iot-device.js
+```
