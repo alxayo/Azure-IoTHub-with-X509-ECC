@@ -4,3 +4,11 @@ intermediateCerts
 newcerts
 private
 serial
+
+index.txt
+index.txt.attr
+index.txt.attr.old
+index.txt.old
+root_ca.txt
+serial.old
+new-device-full-chain.cert.pem

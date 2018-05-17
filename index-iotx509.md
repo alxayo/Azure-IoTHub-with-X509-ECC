@@ -38,3 +38,48 @@ openssl req -new -sha256 -key key.pem -out csr.csr
 openssl req -x509 -sha256 -days 365 -key key.pem -in csr.csr -out certificate.pem
 openssl req -in csr.csr -text -noout | grep -i "Signature.*SHA256" && echo "All is well" || echo "This certificate will stop working in 2017! You must update OpenSSL to generate a widely-compatible certificate"
 ```
+## Azure IoT Hub certificate creation
+
+Use the script to create the root and intermediate certificates
+```bash
+./certGen.sh create_root_and_intermediate
+```
+
+IoT hub createtion and preparation
+```bash
+#Check you version of Azure CLI
+az --verion (2.0.31)
+#Create a resource group
+az group create -l "West Europe" -n iotCert
+#Create Azure IoT Hub
+az iot hub create -g IoTCert -n iotCertHub --sku S1 -l "West Europe" --partition-count 2
+#Upload Root CA certificate to iot HUB
+az iot hub certificate create --hub-name iotCertHub -n
+ECC_Test_Certificate -p ./certs/azure-iot-test-only.root.ca.cert.pem
+#List all certificates for a specific iotHub and get etag
+az iot hub certificate list -g iotCert --hub-name iotCerthub
+#Generate Certificat Verification code
+az iot hub certificate generate-verification-code --hub-name iotCertHub -n ECC_Test_Certificate --etag AAAAAAHtArU=
+```
+
+Sign the verification code from IoT hub
+```bash
+ ./certGen.sh create_verification_certificate D08BEA59EBD60D5CD91DBD9BA18BA5C64D7F47294ED78928
+```
+Azure IoT HUB
+```sh
+#Get the updated etag
+az iot hub certificate list -g iotCert --hub-name iotCerthub
+# Verfy the certificate
+az iot hub certificate verify --hub-name iotCertHub -n ECC_Test_Certificate --path ./certs/verification-code.cert.pem --etag AAAAAAHtBEU=
+```
+
+Create Device Certificates
+```bash
+#create the new device certificate
+certGen.sh create_device_certificate my-iot-device 
+#To get the public key
+cd ./cert
+cat new-device.cert.pem azure-iot-test-only.intermediate.cert.pem azure-iot-test-only.root.ca.cert.pem > new-device-full-chain.cert.pem
+#device's private key is in: ./private/new-device.cert.pem 
+```

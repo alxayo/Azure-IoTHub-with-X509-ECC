@@ -12,7 +12,7 @@
 
 root_ca_dir="."
 home_dir="."
-algorithm="genrsa"
+algorithm="ecparam -genkey -name prime256v1" #genrsa
 COUNTRY="US"
 STATE="WA"
 LOCALITY="Redmond"
@@ -47,10 +47,7 @@ function generate_root_ca()
     cd ${home_dir}
     echo "Creating the Root CA Private Key"
 
-    openssl ${algorithm} \
-            ${password_cmd} \
-            -out ${root_ca_dir}/private/${root_ca_prefix}.key.pem \
-            ${key_bits_length}
+    openssl ${algorithm} -out ${root_ca_dir}/private/${root_ca_prefix}.key.pem
     [ $? -eq 0 ] || exit $?
     chmod 400 ${root_ca_dir}/private/${root_ca_prefix}.key.pem
     [ $? -eq 0 ] || exit $?
@@ -102,9 +99,7 @@ function generate_intermediate_ca()
     cd ${home_dir}
     
     openssl ${algorithm} \
-            ${password_cmd} \
-            -out ${intermediate_ca_dir}/private/${intermediate_ca_prefix}.key.pem \
-            ${key_bits_length}
+            -out ${intermediate_ca_dir}/private/${intermediate_ca_prefix}.key.pem
     [ $? -eq 0 ] || exit $?
     chmod 400 ${intermediate_ca_dir}/private/${intermediate_ca_prefix}.key.pem
     [ $? -eq 0 ] || exit $?
@@ -165,7 +160,7 @@ function generate_intermediate_ca()
     echo "------------------------------------------------------"
     echo "    ${intermediate_ca_dir}/certs/${ca_chain_prefix}.cert.pem"    
     
-    warn_certs_not_for_production
+#    warn_certs_not_for_production
 }
 
 
@@ -187,8 +182,7 @@ function generate_leaf_certificate()
     cd ${home_dir}
 
     openssl ${algorithm} \
-            -out ${certificate_dir}/private/${device_prefix}.key.pem \
-            ${key_bits_length}
+            -out ${certificate_dir}/private/${device_prefix}.key.pem
     [ $? -eq 0 ] || exit $?
     chmod 400 ${certificate_dir}/private/${device_prefix}.key.pem
     [ $? -eq 0 ] || exit $?
@@ -323,6 +317,14 @@ elif [ "${1}" == "create_verification_certificate" ]; then
     generate_verification_certificate "${2}"
 elif [ "${1}" == "create_device_certificate" ]; then
     generate_device_certificate "${2}"
+elif [ "${1}" == "init_fs" ]; then
+    prepare_filesystem "${2}"
+elif [ "${1}" == "init_fs" ]; then
+    prepare_filesystem "${2}"
+elif [ "${1}" == "create_root_ca" ]; then
+    generate_root_ca "${2}"
+elif [ "${1}" == "create_intermediate_ca" ]; then
+    generate_intermediate_ca "${2}"
 else
     echo "Usage: create_root_and_intermediate                   # Creates a new root and intermediate certificates"
     echo "       create_verification_certificate <subjectName>  # Creates a verification certificate, signed with <subjectName>"
