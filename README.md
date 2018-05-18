@@ -102,7 +102,7 @@ az iot device create --hub-name iotCertHub --device-id myEccIoTDevice --x509 --p
 The nodejs simulated device using X509 is created by using a Microsoft samle from public GitHub repo here:
 * [simple_sample_device_x509.js](https://github.com/Azure/azure-iot-sdk-node/tree/master/device/samples)
 
-Open iot-device.js and update the following lines with the relevant data:
+Open _iot-device.js_ and update the following lines with the relevant data:
 ```javascript
 var connectionString = 'HostName=iotCertHub.azure-devices.net;DeviceId=myEccIoTDevice;x509=true';
 var certFile = '../certs/new-device-full-chain.cert.pem';
