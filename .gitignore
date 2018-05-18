@@ -15,3 +15,5 @@ new-device-full-chain.cert.pem
 
 node_modules
 package-lock.json
+
+.vscode
