@@ -14,10 +14,10 @@ var Message = require('azure-iot-device').Message;
 
 // String containing Hostname and Device Id in the following format:
 //  "HostName=<iothub_host_name>;DeviceId=<device_id>;x509=true"
-var connectionString = 'HostName=iotCertHub.azure-devices.net;DeviceId=myEccIoTDevice;x509=true';
-var certFile = '../certs/new-device-full-chain.cert.pem';
+var connectionString = "HostName=<iothub_host_name>;DeviceId=<device_id>;x509=true";
+var certFile = '../certs/new-device-intermediate-chain.cert.pem';
 var keyFile = '../private/new-device.key.pem';
-var passphrase = '';
+var passphrase = '123';
 console.log('starting simulator...');
 
 // fromConnectionString must specify a transport constructor, coming from any transport package.
@@ -66,8 +66,8 @@ console.log('Getting connection back:');
 
  var options = {
    cert : fs.readFileSync(certFile, 'utf-8').toString(),
-   key : fs.readFileSync(keyFile, 'utf-8').toString()
-   //,passphrase: passphrase
+   key : fs.readFileSync(keyFile, 'utf-8').toString(),
+   passphrase: passphrase
  };
 
 // Calling setOptions with the x509 certificate and key (and optionally, passphrase) will configure the client transport to use x509 when connecting to IoT Hub

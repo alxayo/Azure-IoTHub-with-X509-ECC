@@ -1,19 +1,24 @@
 # X.509 ECC Cert with Aure IoT Hub 
 
-## Preliminary reading
+## Used resorces
+### Preliminary reading
 * [Conceptual understanding of X.509 CA certificates in the IoT industry](https://docs.microsoft.com/en-us/azure/iot-hub/iot-hub-x509ca-concept)
 * [Device Authentication using X.509 CA Certificates](https://docs.microsoft.com/en-us/azure/iot-hub/iot-hub-x509ca-overview)
 * [PowerShell scripts to manage CA-signed X.509 certificates](https://docs.microsoft.com/en-us/azure/iot-hub/iot-hub-security-x509-create-certificates#createcerts)
 * [Set up X.509 security in your Azure IoT hub](https://docs.microsoft.com/en-us/azure/iot-hub/iot-hub-security-x509-get-started#registercerts)
 * [Azure IoT certification with Bash script](https://github.com/Azure/azure-iot-sdk-c/blob/master/tools/CACertificates/certGen.sh)
 
-## ATECC508A Microchip
+### Additional Readning
+* [Tools for the Azure IoT Device Provisioning Device SDK for Node.js](https://github.com/Azure/azure-iot-sdk-node/tree/master/provisioning/tools)
+* [Create and provision an X.509 simulated device using Node.js device SDK for IoT Hub Device Provisioning Service](https://docs.microsoft.com/en-us/azure/iot-dps/quick-create-simulated-device-x509-node)
+
+### ATECC508A Microchip
 * [ATECC508A product page](http://www.microchip.com/wwwproducts/en/ATECC508A#additional-features)
 * [Node Authentication Example Using Asymmetric PKI](http://ww1.microchip.com/downloads/en/AppNotes/Atmel-8983-CryptoAuth-ATECC508A-Node-Example-Asymmetric-PKI-ApplicationNote.pdf)
 
 The ATECC508A is a secure element from the Microchip CryptoAuthentication portfolio with advanced Elliptic Curve Cryptography (ECC) capabilities. With ECDH and ECDSA being built right in, this device is ideal for the rapidly growing IoT market by easily supplying the full range of security such as confidentiality, data integrity, and authentication to systems with MCU or MPUs running encryption/decryption algorithms (i.e. AES). Similar to all Microchip CryptoAuthentication products, the new ATECC508A employs ultra-secure hardware-based cryptographic key storage and cryptographic countermeasures which are more robust than software-based key storage.
 
-### Additional Features 
+#### ATECC508A Features 
 * Easy way to run ECDSA and ECDH Key Agreement
 * ECDH key agreement makes encryption/decryption easy
 * Cryptographic accelerator with Secure Hardware-based Key Storage
@@ -26,6 +31,37 @@ The ATECC508A is a secure element from the Microchip CryptoAuthentication portfo
 * Internal High-quality FIPS Random Number Generator (RNG)
 * 10Kb EEPROM Memory for Keys, Certificates, and Data
 
+## Dev Environment
+
+Windows Subsystem for Linux
+```bash
+uname -or
+#4.4.0-43-Microsoft GNU/Linux
+lsb_release -a 
+#Distributor ID: Ubuntu
+#Description:    Ubuntu 16.04.4 LTS
+#Release:        16.04
+#Codename:       xenial
+```
+Open SSL
+```bash
+openssl version
+#OpenSSL 1.0.2g  1 Mar 2016
+```
+
+Node.js and NPM
+```bash
+nodejs --version
+# v8.11.1
+npm --version
+# 5.6.0 
+```
+Azure CLI
+```bash
+az --version
+# azure-cli (2.0.31)
+# iot (0.1.19
+```
 
 ## Self-Signed ECC certificate
 
@@ -79,7 +115,7 @@ Create Device Certificates
 #create the new device certificate
 certGen.sh create_device_certificate my-iot-device 
 #To get the public key
-cd ./cert
+cd ./certs
 cat new-device.cert.pem azure-iot-test-only.intermediate.cert.pem azure-iot-test-only.root.ca.cert.pem > new-device-full-chain.cert.pem
 #device's private key is in: ./private/new-device.cert.pem 
 ```
