@@ -4,10 +4,10 @@
 'use strict';
 
 var fs = require('fs');
-var Protocol = require('azure-iot-device-mqtt').Mqtt;
+//var Protocol = require('azure-iot-device-mqtt').Mqtt;
 // Uncomment one of these transports and then change it in fromConnectionString to test other transports
 // var Protocol = require('azure-iot-device-amqp').AmqpWs;
-// var Protocol = require('azure-iot-device-http').Http;
+var Protocol = require('azure-iot-device-http').Http;
 // var Protocol = require('azure-iot-device-amqp').Amqp;
 var Client = require('azure-iot-device').Client;
 var Message = require('azure-iot-device').Message;
@@ -16,14 +16,16 @@ var Message = require('azure-iot-device').Message;
 //  "HostName=<iothub_host_name>;DeviceId=<device_id>;x509=true"
 var connectionString = 'HostName=iotCertHub.azure-devices.net;DeviceId=myEccIoTDevice;x509=true';
 var certFile = '../certs/new-device-full-chain.cert.pem';
-var keyFile = '../private/new-device.cert.pem';
-var passphrase = '123';
+var keyFile = '../private/new-device.key.pem';
+var passphrase = '';
+console.log('starting simulator...');
 
 // fromConnectionString must specify a transport constructor, coming from any transport package.
 var client = Client.fromConnectionString(connectionString, Protocol);
 
 var connectCallback = function (err) {
-  if (err) {
+console.log('Getting connection back:');
+    if (err) {
     console.error('Could not connect: ' + err.message);
   } else {
     console.log('Client connected');
@@ -64,12 +66,14 @@ var connectCallback = function (err) {
 
  var options = {
    cert : fs.readFileSync(certFile, 'utf-8').toString(),
-   key : fs.readFileSync(keyFile, 'utf-8').toString(),
-   passphrase: passphrase
+   key : fs.readFileSync(keyFile, 'utf-8').toString()
+   //,passphrase: passphrase
  };
 
 // Calling setOptions with the x509 certificate and key (and optionally, passphrase) will configure the client transport to use x509 when connecting to IoT Hub
+console.log('set conection options ...');
 client.setOptions(options);
+console.log('opening connection ...');
 client.open(connectCallback);
 
 // Helper function to print results in the console

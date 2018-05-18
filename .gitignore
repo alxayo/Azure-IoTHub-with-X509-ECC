@@ -12,3 +12,6 @@ index.txt.old
 root_ca.txt
 serial.old
 new-device-full-chain.cert.pem
+
+node_modules
+package-lock.json
